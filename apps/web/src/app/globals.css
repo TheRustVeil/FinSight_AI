@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /*
+   * Antimetal-inspired LIGHT theme.
+   * White surfaces, hairline gray borders, teal/cyan accent, generous
+   * whitespace, monospace micro-labels and numbered section markers.
+   */
+  :root,
+  .light,
+  .dark {
+    --background: 0 0% 100%;
+    --foreground: 220 20% 11%;        /* charcoal */
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 11%;
+    --primary: 173 80% 36%;           /* teal #119b8d */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 20% 20%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 174 60% 95%;            /* faint teal tint */
+    --accent-foreground: 174 80% 24%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;            /* hairline gray */
+    --input: 220 13% 88%;
+    --ring: 173 80% 36%;
+    --radius: 0.5rem;
+    --sidebar-background: 210 20% 99%;
+    --sidebar-foreground: 220 20% 20%;
+    --sidebar-border: 220 13% 91%;
+    /* Data-viz: teal-led, readable on white */
+    --chart-1: 173 72% 40%;           /* teal */
+    --chart-2: 217 71% 53%;           /* blue */
+    --chart-3: 38 92% 50%;            /* amber */
+    --chart-4: 280 55% 58%;           /* violet */
+    --chart-5: 220 9% 55%;            /* gray */
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html { color-scheme: light; }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  ::selection { @apply bg-primary/20 text-foreground; }
+}
+
+@layer components {
+  /* Uppercase monospace micro-label — Antimetal eyebrow style. */
+  .label-mono {
+    @apply font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground;
+  }
+  /* Big monospace section number (01, 02, ...). */
+  .section-num {
+    @apply font-mono text-xs tracking-[0.2em] text-primary;
+  }
+  /* Hairline-bordered surface card. */
+  .panel {
+    @apply rounded-lg border border-border bg-card;
+  }
+}
+
+@layer utilities {
+  /* Faint engineering grid overlay (dark lines on light). */
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+  .bg-grid-sm {
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+}
+
+/* Minimal technical scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: hsl(220 13% 82%);
+  border: 3px solid hsl(var(--background));
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover { background: hsl(220 13% 70%); }

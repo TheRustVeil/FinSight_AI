@@ -1,0 +1,22 @@
+# Normalize line endings to LF in the repo (silences CRLF warnings on Windows).
+* text=auto eol=lf
+
+# Keep Windows-only scripts as CRLF.
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+# Treat lockfiles as generated (collapse in diffs/reviews).
+yarn.lock        linguist-generated=true -diff
+package-lock.json linguist-generated=true -diff
+
+# Binary assets — never normalize.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.webp binary
+*.woff  binary
+*.woff2 binary
+*.pdf  binary
