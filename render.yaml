@@ -1,0 +1,60 @@
+# Render Blueprint for the FinSight AI backend (apps/api).
+# Deploy: push to GitHub → Render → "New +" → "Blueprint" → pick this repo.
+# Render reads this file and provisions the service; you fill in the secret
+# env vars (marked sync:false) in the dashboard.
+#
+# The API runs as ONE web service — the BullMQ workers run in-process with the
+# Express server (see apps/api/src/server.ts), so no separate worker service is
+# needed. It connects to managed Postgres (Neon) + Redis (Upstash); set those
+# connection strings as env vars below.
+
+services:
+  - type: web
+    name: finsight-api
+    runtime: node
+    plan: free
+    region: oregon
+    # Build from the monorepo root so Yarn workspaces resolve the `shared`
+    # package. The `postinstall` script runs `prisma generate`.
+    buildCommand: corepack enable && yarn install --frozen-lockfile
+    # Starts apps/api → `tsx src/server.ts` (tsx is a prod dependency so the
+    # TypeScript `shared` workspace import loads without a compile step).
+    startCommand: yarn workspace api start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # JWT secrets — Render generates strong values (>32 chars) on first deploy.
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      # ── Fill these in the Render dashboard (sync:false = not stored in git) ──
+      - key: DATABASE_URL          # Neon Postgres connection string
+        sync: false
+      - key: REDIS_URL             # Upstash Redis URL (rediss://… for TLS)
+        sync: false
+      - key: GEMINI_API_KEY        # Google AI Studio key (enables AI advisor)
+        sync: false
+      - key: FRONTEND_URL          # your Vercel URL, e.g. https://finsight.vercel.app
+        sync: false
+      # ── Optional ──
+      - key: GEMINI_MODEL
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CALLBACK_URL   # https://finsight-api.onrender.com/api/v1/auth/google/callback
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: EMAIL_FROM
+        sync: false

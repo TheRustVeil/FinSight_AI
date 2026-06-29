@@ -294,20 +294,10 @@ All routes are under `/api/v1`. Protected routes require a `Bearer` access token
 
 ## ☁️ Deployment
 
-This is a **two-service app**, so it deploys as two pieces:
+This is a **two-service app** — see **[DEPLOYMENT.md](DEPLOYMENT.md)** for full step-by-step instructions.
 
-### Frontend (`apps/web`) → Vercel
-1. Import the repo in Vercel.
-2. Set **Root Directory** to `apps/web`.
-3. Add env var `NEXT_PUBLIC_API_URL` pointing at your deployed API URL.
-4. Deploy. (Vercel auto-detects Next.js.)
-
-### Backend (`apps/api`) → a Node host (Render / Railway / Fly.io)
-The API is a long-running Express server with **BullMQ workers** and **Redis**, so it does **not** run on Vercel's serverless model. Host it on a platform that runs persistent Node processes:
-- Build: `yarn workspace api build` · Start: `yarn workspace api start`
-- Provide all `apps/api/.env` values (use **managed Postgres + Redis**, e.g. Neon + Upstash).
-- Run `yarn db:push && yarn db:seed` once against the production database.
-- Set the web app's `NEXT_PUBLIC_API_URL` to this service's URL, and configure CORS / `GOOGLE_CALLBACK_URL` accordingly.
+- **Frontend (`apps/web`) → Vercel** — set Root Directory to `apps/web` and `NEXT_PUBLIC_API_URL` to the API URL. The Next.js `rewrite` proxies `/api/v1/*` to the backend (same-origin to the browser → no CORS headaches).
+- **Backend (`apps/api`) → Render** — provisioned from the committed [`render.yaml`](render.yaml) blueprint. It's a persistent Express server with **in-process BullMQ workers**, so it doesn't fit Vercel's serverless model. Starts via `tsx` (the `shared` workspace package is consumed as TypeScript). Uses managed **Neon** (Postgres) + **Upstash** (Redis).
 
 > ⚠️ **Never commit secrets.** Only `.env.example` / `.env.local.example` are tracked; real `.env` files are gitignored. Set production secrets in each platform's dashboard.
 
