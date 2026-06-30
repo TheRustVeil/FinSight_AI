@@ -43,7 +43,11 @@ services:
         sync: false
       - key: GEMINI_API_KEY        # Google AI Studio key (enables AI advisor)
         sync: false
-      - key: FRONTEND_URL          # your Vercel URL, e.g. https://finsight.vercel.app
+      # ⚠️ REQUIRED. This is the CORS allow-origin. If unset it falls back to
+      # http://localhost:3000 and the browser blocks EVERY request from the live
+      # site ("Access-Control-Allow-Origin ... not equal to the supplied origin").
+      # Use the EXACT Vercel origin: https, no trailing slash, no path.
+      - key: FRONTEND_URL          # e.g. https://fin-sight-ai-web.vercel.app
         sync: false
       # ── Optional ──
       - key: GEMINI_MODEL
