@@ -14,8 +14,10 @@ export async function register(input: RegisterInput) {
 
   const passwordHash = await hashPassword(input.password);
 
-  // In development we auto-verify so the app is usable without a running mail server.
-  const autoVerify = env.NODE_ENV === 'development';
+  // In development we auto-verify so the app is usable without a running mail
+  // server. AUTH_AUTO_VERIFY=true enables the same behavior in production
+  // (e.g. a demo deploy without an SMTP provider).
+  const autoVerify = env.NODE_ENV === 'development' || env.AUTH_AUTO_VERIFY;
 
   const user = await prisma.user.create({
     data: {

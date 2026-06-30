@@ -35,6 +35,10 @@ const envSchema = z.object({
   GEMINI_MODEL: z.string().optional(),
 
   BCRYPT_ROUNDS: z.coerce.number().default(12),
+
+  // Set to "true" to auto-verify new accounts without sending a verification
+  // email (for a demo deploy with no SMTP provider). Off by default.
+  AUTH_AUTO_VERIFY: z.string().optional().transform((v) => v === 'true'),
 });
 
 const parsed = envSchema.safeParse(process.env);

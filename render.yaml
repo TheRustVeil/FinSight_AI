@@ -25,6 +25,10 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      # Auto-verify new accounts without SMTP (demo deploy). Remove once a real
+      # SMTP provider is configured below.
+      - key: AUTH_AUTO_VERIFY
+        value: "true"
       # JWT secrets — Render generates strong values (>32 chars) on first deploy.
       - key: JWT_ACCESS_SECRET
         generateValue: true
