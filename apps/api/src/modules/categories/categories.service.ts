@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../config/database';
 import { ApiError } from '../../lib/api-error';
@@ -24,7 +25,9 @@ export async function listCategories(userId: string) {
 export async function createCategory(userId: string, data: z.infer<typeof createCategorySchema>) {
   const existing = await prisma.category.findFirst({ where: { slug: data.slug, userId } });
   if (existing) throw ApiError.conflict('A category with this slug already exists');
-  return prisma.category.create({ data: { userId, ...data, isSystem: false } });
+  return prisma.category.create({
+    data: { userId, ...data, isSystem: false } as Prisma.CategoryUncheckedCreateInput,
+  });
 }
 
 export async function updateCategory(userId: string, categoryId: string, data: z.infer<typeof updateCategorySchema>) {
