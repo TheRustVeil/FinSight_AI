@@ -99,7 +99,7 @@ export async function createTransaction(userId: string, data: CreateTransactionI
       aiConfidence,
       aiCategoryConfirmed: !!txData.categoryId,
       tags: tags?.length ? { createMany: { data: tags.map((tag) => ({ tag })) } } : undefined,
-    },
+    } as Prisma.TransactionUncheckedCreateInput,
     include: {
       category: { select: { id: true, name: true, slug: true, icon: true, color: true } },
       tags: { select: { tag: true } },

@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../config/database';
 import { ApiError } from '../../lib/api-error';
@@ -25,7 +26,7 @@ export async function createAccount(userId: string, data: z.infer<typeof createA
   if (data.isDefault) {
     await prisma.account.updateMany({ where: { userId }, data: { isDefault: false } });
   }
-  return prisma.account.create({ data: { userId, ...data } });
+  return prisma.account.create({ data: { userId, ...data } as Prisma.AccountUncheckedCreateInput });
 }
 
 export async function getAccount(userId: string, accountId: string) {
