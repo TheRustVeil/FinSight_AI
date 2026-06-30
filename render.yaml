@@ -16,7 +16,9 @@ services:
     region: oregon
     # Build from the monorepo root so Yarn workspaces resolve the `shared`
     # package. The `postinstall` script runs `prisma generate`.
-    buildCommand: corepack enable && yarn install --frozen-lockfile
+    # NOTE: use Render's preinstalled Yarn classic — do NOT `corepack enable`
+    # (it fails with EROFS trying to symlink into the read-only /usr/bin).
+    buildCommand: yarn install --frozen-lockfile
     # Starts apps/api → `tsx src/server.ts` (tsx is a prod dependency so the
     # TypeScript `shared` workspace import loads without a compile step).
     startCommand: yarn workspace api start
