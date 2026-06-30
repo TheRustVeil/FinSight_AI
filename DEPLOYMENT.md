@@ -57,6 +57,13 @@ The API is a **long-running Express server** that also runs **BullMQ workers in-
 
 > **Free-plan note:** Render free services sleep when idle (cold starts ~30s) and the in-process insights cron won't fire while asleep. Fine for a demo; upgrade for always-on workers.
 
+### Keep the free API awake (optional but recommended)
+To avoid cold starts and keep the in-process workers/cron alive on the free plan, ping the health endpoint every ~10 minutes with a free uptime monitor:
+1. Create a free monitor at [UptimeRobot](https://uptimerobot.com) or [cron-job.org](https://cron-job.org).
+2. **URL:** `https://<your-api>.onrender.com/health` · **Interval:** 5–10 min.
+
+One always-on free service uses ~730 of Render's 750 free instance-hours/month, so this fits within the free allowance.
+
 ---
 
 ## 2. Frontend → Vercel (`apps/web`)
