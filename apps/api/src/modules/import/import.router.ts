@@ -5,7 +5,7 @@ import { authenticate } from '../../middleware/auth.middleware';
 import { asyncHandler } from '../../lib/async-handler';
 import { ApiError } from '../../lib/api-error';
 import * as service from './import.service';
-import { getProgress, importProgressKey } from './import.service';
+import { getProgress, importProgressKey, type ColumnMapping } from './import.service';
 import { redis } from '../../config/redis';
 
 export const importRouter = Router();
@@ -43,8 +43,11 @@ importRouter.post('/', upload.single('file'), asyncHandler(async (req: Request, 
   if (!req.file) throw ApiError.badRequest('No file uploaded');
   const mappingParsed = mappingSchema.safeParse(JSON.parse(req.body.mapping ?? '{}'));
   if (!mappingParsed.success) throw ApiError.badRequest('Invalid column mapping');
+  // Schema requires date+amount, but Zod's inferred type can resolve to
+  // all-optional under newer TypeScript; assert the validated shape.
+  const mapping: ColumnMapping = mappingParsed.data as ColumnMapping;
   const accountId = req.body.accountId || undefined;
-  const batch = await service.createImportBatch(req.user!.id, req.file.originalname, req.file.buffer, mappingParsed.data, accountId);
+  const batch = await service.createImportBatch(req.user!.id, req.file.originalname, req.file.buffer, mapping, accountId);
   res.status(202).json({ batchId: batch.id, status: batch.status, totalRows: batch.totalRows });
 }));
 
